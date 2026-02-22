@@ -2,11 +2,7 @@ from flask import Blueprint, render_template, redirect, url_for, flash, request,
 from flask_login import login_user, logout_user, login_required, current_user
 from app import db
 from app.models import User, Building, Apartment, Owner, Service, Charge, Payment, Request, Staff, Expense, Resident
-from app.forms import (
-    RegistrationForm, LoginForm, ProfileForm, BuildingRegistrationForm,
-    ApartmentRegistrationForm, OwnerRegistrationForm, ServiceSelectionForm,
-    ChargeEntryForm, PaymentEntryForm, RequestForm, StaffForm, ExpenseForm, ResidentForm
-)
+from app.forms import RegistrationForm, LoginForm, ProfileForm, BuildingRegistrationForm, ApartmentRegistrationForm, OwnerRegistrationForm, ServiceSelectionForm, ChargeEntryForm, PaymentEntryForm, RequestForm, StaffForm, ExpenseForm, ResidentForm
 from app.services import create_user
 from app.utils import generate_puzzle
 
@@ -411,6 +407,32 @@ def api_get_buildings():
         app.logger.error(f"API error: {e}")
         return jsonify({'error': 'Internal server error'}), 500
 
+
+@bp.route('/admin/users')
+@login_required
+def admin_users():
+    if current_user.role != 'Admin':
+        flash('Доступ запрещён: требуется роль администратора.', 'danger')
+        return redirect(url_for('main.home'))
+
+    users = db.session.execute(db.select(User)).scalars().all()
+    return render_template('admin_users.html', users=users)
+
+
+@bp.route('/admin/toggle_user/<int:user_id>')
+@login_required
+def toggle_user(user_id):
+    if current_user.role != 'Admin':
+        return jsonify({'error': 'Forbidden'}), 403
+
+    user = db.session.get(User, user_id)
+    if not user or user.id == current_user.id:
+        return jsonify({'error': 'Invalid user'}), 400
+
+    user.blocked = not user.blocked
+    db.session.commit()
+    status = 'заблокирован' if user.blocked else 'разблокирован'
+    return jsonify({'success': True, 'status': status, 'blocked': user.blocked})
 
 @bp.app_errorhandler(404)
 def page_not_found(e):

@@ -1,14 +1,171 @@
 {% extends "base.html" %}
 
+{% block title %}Главная{% endblock %}
+
 {% block content %}
-<div class="text-center">
-    <h1>Добро пожаловать в Портал ЖК</h1>
-    <p class="lead">Управляйте домами, квартирами, платежами и заявками в одном месте.</p>
+<div class="text-center mb-5">
+    <h1>Добро пожаловать, {{ current_user.username if current_user.is_authenticated else 'Гость' }}!</h1>
+    <p class="lead">Выберите действие</p>
+</div>
+
+<div class="row g-4 justify-content-center">
     {% if current_user.is_authenticated %}
-        <a href="{{ url_for('main.profile') }}" class="btn btn-primary btn-lg">Перейти в профиль</a>
-    {% else %}
-        <a href="{{ url_for('main.login') }}" class="btn btn-outline-primary mr-2">Войти</a>
-        <a href="{{ url_for('main.register') }}" class="btn btn-success">Зарегистрироваться</a>
+        <div class="col-md-4">
+            <a href="{{ url_for('main.register_building') }}" class="text-decoration-none">
+                <div class="card h-100 border-primary shadow-sm hover-shadow">
+                    <div class="card-body text-center">
+                        <i class="fas fa-building fa-3x mb-3 text-primary"></i>
+                        <h5 class="card-title">Зарегистрировать дом</h5>
+                        <p class="text-muted small">Добавьте новое здание в систему</p>
+                    </div>
+                </div>
+            </a>
+        </div>
+
+        <div class="col-md-4">
+            <a href="{{ url_for('main.register_apartment') }}" class="text-decoration-none">
+                <div class="card h-100 border-success shadow-sm hover-shadow">
+                    <div class="card-body text-center">
+                        <i class="fas fa-home fa-3x mb-3 text-success"></i>
+                        <h5 class="card-title">Зарегистрировать квартиру</h5>
+                        <p class="text-muted small">Добавьте квартиру к существующему дому</p>
+                    </div>
+                </div>
+            </a>
+        </div>
+
+        <div class="col-md-4">
+            <a href="{{ url_for('main.register_owner') }}" class="text-decoration-none">
+                <div class="card h-100 border-info shadow-sm hover-shadow">
+                    <div class="card-body text-center">
+                        <i class="fas fa-user-tie fa-3x mb-3 text-info"></i>
+                        <h5 class="card-title">Регистрация владельца</h5>
+                        <p class="text-muted small">Привяжите владельца к квартире</p>
+                    </div>
+                </div>
+            </a>
+        </div>
+
+        <div class="col-md-4">
+            <a href="{{ url_for('main.register_charge') }}" class="text-decoration-none">
+                <div class="card h-100 border-warning shadow-sm hover-shadow">
+                    <div class="card-body text-center">
+                        <i class="fas fa-file-invoice-dollar fa-3x mb-3 text-warning"></i>
+                        <h5 class="card-title">Внести начисление</h5>
+                        <p class="text-muted small">Коммунальные услуги, ЖКХ и т.п.</p>
+                    </div>
+                </div>
+            </a>
+        </div>
+
+        <div class="col-md-4">
+            <a href="{{ url_for('main.register_payment') }}" class="text-decoration-none">
+                <div class="card h-100 border-success shadow-sm hover-shadow">
+                    <div class="card-body text-center">
+                        <i class="fas fa-money-check-alt fa-3x mb-3 text-success"></i>
+                        <h5 class="card-title">Зарегистрировать оплату</h5>
+                        <p class="text-muted small">Фиксация поступления средств</p>
+                    </div>
+                </div>
+            </a>
+        </div>
+
+        <div class="col-md-4">
+            <a href="{{ url_for('main.register_request') }}" class="text-decoration-none">
+                <div class="card h-100 border-danger shadow-sm hover-shadow">
+                    <div class="card-body text-center">
+                        <i class="fas fa-toolbox fa-3x mb-3 text-danger"></i>
+                        <h5 class="card-title">Новая заявка</h5>
+                        <p class="text-muted small">Ремонт, обслуживание, вызов мастера</p>
+                    </div>
+                </div>
+            </a>
+        </div>
+
+        <div class="col-md-4">
+            <a href="{{ url_for('main.register_staff') }}" class="text-decoration-none">
+                <div class="card h-100 border-secondary shadow-sm hover-shadow">
+                    <div class="card-body text-center">
+                        <i class="fas fa-hard-hat fa-3x mb-3 text-secondary"></i>
+                        <h5 class="card-title">Добавить сотрудника</h5>
+                        <p class="text-muted small">Персонал: сантехник, электрик и др.</p>
+                    </div>
+                </div>
+            </a>
+        </div>
+
+        <div class="col-md-4">
+            <a href="{{ url_for('main.register_expense') }}" class="text-decoration-none">
+                <div class="card h-100 border-dark shadow-sm hover-shadow">
+                    <div class="card-body text-center">
+                        <i class="fas fa-receipt fa-3x mb-3 text-dark"></i>
+                        <h5 class="card-title">Зарегистрировать расход</h5>
+                        <p class="text-muted small">Затраты на содержание дома</p>
+                    </div>
+                </div>
+            </a>
+        </div>
+
+        <div class="col-md-4">
+            <a href="{{ url_for('main.register_resident') }}" class="text-decoration-none">
+                <div class="card h-100 border-primary shadow-sm hover-shadow">
+                    <div class="card-body text-center">
+                        <i class="fas fa-users fa-3x mb-3 text-primary"></i>
+                        <h5 class="card-title">Зарегистрировать жителя</h5>
+                        <p class="text-muted small">Не владелец: арендатор, родственник</p>
+                    </div>
+                </div>
+            </a>
+        </div>
+
+        <div class="col-md-4">
+            <a href="{{ url_for('main.register_service') }}" class="text-decoration-none">
+                <div class="card h-100 border-info shadow-sm hover-shadow">
+                    <div class="card-body text-center">
+                        <i class="fas fa-concierge-bell fa-3x mb-3 text-info"></i>
+                        <h5 class="card-title">Услуги</h5>
+                        <p class="text-muted small">Управление типами коммунальных услуг</p>
+                    </div>
+                </div>
+            </a>
+        </div>
+    {% endif %}
+
+    <div class="col-md-4">
+        <a href="{{ url_for('main.profile') }}" class="text-decoration-none">
+            <div class="card h-100 border-warning shadow-sm hover-shadow">
+                <div class="card-body text-center">
+                    <i class="fas fa-user-circle fa-3x mb-3 text-warning"></i>
+                    <h5 class="card-title">Мой профиль</h5>
+                    <p class="text-muted small">Настройки аккаунта</p>
+                </div>
+            </div>
+        </a>
+    </div>
+
+    {% if current_user.is_authenticated and current_user.role == 'Admin' %}
+        <div class="col-md-4">
+            <a href="{{ url_for('main.admin_users') }}" class="text-decoration-none">
+                <div class="card h-100 border-danger shadow-sm hover-shadow">
+                    <div class="card-body text-center">
+                        <i class="fas fa-cog fa-3x mb-3 text-danger"></i>
+                        <h5 class="card-title">Управление пользователями</h5>
+                        <p class="text-muted small">Блокировка, просмотр, доступы</p>
+                    </div>
+                </div>
+            </a>
+        </div>
     {% endif %}
 </div>
+
+<style>
+    .hover-shadow:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1) !important;
+        transition: all 0.3s ease;
+    }
+</style>
+{% endblock %}
+{% block scripts %}
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
 {% endblock %}

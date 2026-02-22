@@ -1,0 +1,69 @@
+{% extends "base.html" %}
+
+{% block title %}Управление пользователями{% endblock %}
+
+{% block content %}
+<div class="card w-75 mx-auto shadow-sm rounded border-0">
+    <div class="card-header">
+        <h2 class="card-title text-center">Управление пользователями системы</h2>
+    </div>
+    <div class="card-body">
+        <table class="table table-striped table-hover">
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Имя пользователя</th>
+                    <th>Роль</th>
+                    <th>Статус</th>
+                    <th>Действие</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for user in users %}
+                <tr>
+                    <td>{{ user.id }}</td>
+                    <td>{{ user.username }}</td>
+                    <td>{{ user.role }}</td>
+                    <td>
+                        <span class="badge bg-{% if user.blocked %}danger{% else %}success{% endif %}">
+                            {{ 'Заблокирован' if user.blocked else 'Активен' }}
+                        </span>
+                    </td>
+                    <td>
+                        <button class="btn btn-sm btn-outline-secondary toggle-btn"
+                                data-user-id="{{ user.id }}"
+                                data-current-status="{{ user.blocked }}">
+                            {{ 'Разблокировать' if user.blocked else 'Заблокировать' }}
+                        </button>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<script>
+document.querySelectorAll('.toggle-btn').forEach(btn => {
+    btn.addEventListener('click', function () {
+        const userId = this.dataset.userId;
+        fetch(`/admin/toggle_user/${userId}`, { method: 'GET' })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    btn.textContent = data.blocked ? 'Разблокировать' : 'Заблокировать';
+                    btn.closest('tr').querySelector('.badge').textContent = data.blocked ? 'Заблокирован' : 'Активен';
+                    btn.closest('tr').querySelector('.badge').className =
+                        data.blocked ? 'badge bg-danger' : 'badge bg-success';
+
+                    alert(`Пользователь ${data.status}`);
+                }
+            })
+            .catch(err => {
+                console.error(err);
+                alert('Ошибка при изменении статуса');
+            });
+    });
+});
+</script>
+{% endblock %}
